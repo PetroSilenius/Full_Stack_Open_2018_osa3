@@ -3,6 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/Person')
 
 morgan.token('body', function getId(req) {
     return JSON.stringify(req.body)
@@ -14,36 +15,15 @@ app.use(cors())
 app.use(express.static('build'))
 
 
-let persons = [
-    {
-        "name": "Arto Hellas",
-        "number": "040-123457",
-        "id": 1
-    },
-    {
-        "name": "Martti Tienari",
-        "number": "040-123456",
-        "id": 2
-    },
-    {
-        "name": "Arto Järvinen",
-        "number": "040-123456",
-        "id": 3
-    },
-    {
-        "name": "Lea Kutvonen",
-        "number": "040-123456",
-        "id": 4
-    }
-]
-
 app.get('/info', (request, response) => {
     response.send(`<p>Puhelinluettelossa on ${persons.size} henkilön tiedot</p>
     <div>${new Date()}</div>`)
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person
+        .find({})
+        .then(response.json(response.json(persons)))
 })
 
 app.post('/api/persons', (request, response) => {
@@ -57,19 +37,19 @@ app.post('/api/persons', (request, response) => {
     //if(persons.map(person => person.name === request.body.name)){
         //return response.status(400).json({error:'Name already in use'})
     //}
-    const person = {
+    const person = new Person ({
         name: request.body.name,
         number: request.body.number,
-    }
+    })
 
-    persons = persons.concat(person)
+    person
+        .save()
+        .then(response.json(person))
 
-    response.json(person)
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
+    const person = Person.findById(request.parmas.id)
 
     if ( person ) {
         response.json(person)
