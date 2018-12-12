@@ -98,7 +98,7 @@ app.get('/api/persons/:id', (request, response) => {
             if (person) {
                 response.json(Person.format(person))
             } else {
-                response.status(404).end()
+                response.status(407).end()
             }
         })
         .catch(error => {
