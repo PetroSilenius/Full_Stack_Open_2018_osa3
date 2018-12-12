@@ -29,7 +29,7 @@ if (process.argv.length <=2) {
     person
         .save()
         .then(response => {
-            console.log('Lisätään henkilö ', person.name, ' numero ', person.number, ' luetteloon')
+            console.log(`Lisätään henkilö ${person.name} numero ${person.number} luetteloon`)
             mongo.connection.close()
         })
 }

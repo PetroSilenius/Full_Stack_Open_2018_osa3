@@ -25,19 +25,19 @@ app.use(express.static('build'))
 app.use(logger)
 
 
-const formatPerson = (person) => {
+const formatPerson = (person) => (
     {
-        name: person.name
-        number: person.number
+        name: person.name,
+        number: person.number,
         id: person._id
     }
-}
+)
 
 app.get('/info', (request, response) => {
     Person
         .find({})
-        .then(response.send(
-        `<p>Puhelinluettelossa on ${persons.length} henkilön tiedot</p>
+        .then(persons => response.send(
+        `<div>Puhelinluettelossa on ${persons.length} henkilön tiedot</div>
         <div>${new Date()}</div>`))
 })
 
@@ -45,7 +45,7 @@ app.get('/api/persons', (request, response) => {
     Person
         .find({})
         .then(persons => {
-            response.json(persons.map(formatPerson))
+            response.json(persons.map(Person.format))
         })
 })
 
