@@ -71,20 +71,22 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const person = Person.findById(request.parmas.id)
 
-    if ( person ) {
-        response.json(Person.format(person))
-    } else {
-        response.status(404).end()
-    }
+    Person
+        .findById(request.params.id)
+        .then(person => {
+            if (person) {
+                response.json(Person.format(person))
+            } else {
+                response.status(404).end()
+            }
+        })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
     Person
         .findByIdAndRemove(request.params.id)
-
-    response.status(204).end()
+        .then(response.status(204).end())
 })
 
 const PORT = process.env.PORT || 3001
