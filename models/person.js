@@ -9,4 +9,12 @@ const Person = mongo.model('Person',{
     number: String,
 })
 
+Person.statics.format = (person) => (
+    {
+        name: person.name,
+        number: person.number,
+        id: person._id
+    }
+)
+
 module.ecports = Person
