@@ -9,10 +9,20 @@ morgan.token('body', function getId(req) {
     return JSON.stringify(req.body)
 })
 
+app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan(':method :url :body :status :res[content-length] - :response-time ms'))
-app.use(cors())
+
+const logger = (request, response, next) => {
+    console.log('Method:',request.method)
+    console.log('Path:  ', request.path)
+    console.log('Body:  ', request.body)
+    console.log('---')
+    next()
+}
+
 app.use(express.static('build'))
+app.use(logger)
 
 
 const formatPerson = (person) => {
@@ -35,7 +45,7 @@ app.get('/api/persons', (request, response) => {
     Person
         .find({})
         .then(persons => {
-            response.json(persons.map(Person.format))
+            response.json(persons.map(formatPerson))
         })
 })
 
@@ -51,6 +61,7 @@ app.post('/api/persons', (request, response) => {
     const person = new Person ({
         name: request.body.name,
         number: request.body.number,
+        id: request.body._id
     })
 
     person
