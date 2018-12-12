@@ -78,7 +78,7 @@ app.post('/api/persons', (request, response) => {
                 return response.status(400).json({error:'Person already exists'})
             } else {
                 person.save()
-                    .then(response.json(Person.format(person)))
+                    .then(person => response.json(Person.format(person)))
                     .catch(error => {
                         console.log(error)
                         response.status(500).end()
@@ -98,7 +98,7 @@ app.get('/api/persons/:id', (request, response) => {
             if (person) {
                 response.json(Person.format(person))
             } else {
-                response.status(407).end()
+                response.status(404).end()
             }
         })
         .catch(error => {
@@ -132,8 +132,8 @@ app.put('/api/persons/:id'), (request, response) => {
 
     Person
         .findByIdAndUpdate(request.params.id, person, {new: true})
-        .then(updatedPerson => {
-            response.json(Person.format(updatedPerson))
+        .then(person => {
+            response.json(Person.format(person))
         })
         .catch(error => {
             console.log(error)
