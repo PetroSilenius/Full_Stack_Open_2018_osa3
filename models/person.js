@@ -19,6 +19,6 @@ personSchema.statics.format = (person) => (
     }
 )
 
-const Person = mongoose.model('Person', personSchema)
+const Person = mongo.model('Person', personSchema)
 
 module.ecports = Person
