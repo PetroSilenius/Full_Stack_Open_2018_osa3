@@ -72,7 +72,7 @@ app.post('/api/persons', (request, response) => {
     })
 
     person
-        .findOne({name: request.body.name})
+        .findById(request.params.id)
         .then(result => {
             if (result){
                 return response.status(400).json({error:'Person already exists'})
