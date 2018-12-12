@@ -4,7 +4,7 @@ const url = 'mongodb://fullstack:A49NVuTjduafn2L@ds137650.mlab.com:37650/phonebo
 
 mongo.connect(url)
 
-const personSchema = new mongoose.Schema(
+const personSchema = new mongo.Schema(
     {
         name: String,
         number: String
