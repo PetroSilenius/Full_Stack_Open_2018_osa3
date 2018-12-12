@@ -21,4 +21,4 @@ personSchema.statics.format = (person) => (
 
 const Person = mongo.model('Person', personSchema)
 
-module.ecports = Person
+module.exports = Person
