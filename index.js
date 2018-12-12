@@ -127,7 +127,7 @@ app.put('/api/persons/:id'), (request, response) => {
 
     const person = {
         name : request.body.name,
-        number: request.body.name
+        number: request.body.number
     }
 
     Person
