@@ -68,8 +68,7 @@ app.post('/api/persons', (request, response) => {
 
     const person = new Person ({
         name: request.body.name,
-        number: request.body.number,
-        id: request.body._id
+        number: request.body.number
     })
 
     person
@@ -132,13 +131,13 @@ app.put('/api/persons/:id'), (request, response) => {
     }
 
     Person
-        .findByIdAndUpdate(request.params.id, person, {new:true})
+        .findByIdAndUpdate(request.params.id, person, {new: true})
         .then(updatedPerson => {
             response.json(Person.format(updatedPerson))
         })
         .catch(error => {
             console.log(error)
-            resposnse.status(400).send({error: 'malformatted id'})
+            response.status(400).send({error: 'malformatted id'})
         })
 }
 
