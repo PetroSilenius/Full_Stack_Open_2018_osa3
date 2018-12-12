@@ -39,6 +39,10 @@ app.get('/info', (request, response) => {
         .then(persons => response.send(
         `<div>Puhelinluettelossa on ${persons.length} henkilön tiedot</div>
         <div>${new Date()}</div>`))
+        .catch(error => {
+            console.log(error)
+            response.status(500).end()
+        })
 })
 
 app.get('/api/persons', (request, response) => {
@@ -46,6 +50,10 @@ app.get('/api/persons', (request, response) => {
         .find({})
         .then(persons => {
             response.json(persons.map(Person.format))
+        })
+        .catch(error => {
+            console.log(error)
+            response.status(500).end()
         })
 })
 
@@ -65,13 +73,26 @@ app.post('/api/persons', (request, response) => {
     })
 
     person
-        .save()
-        .then(response.json(Person.format(person)))
-
+        .findOne({name: request.body.name})
+        .then(result => {
+            if (result){
+                return response.status(400).json({error:'Person already exists'})
+            } else {
+                person.save()
+                    .then(response.json(Person.format(person)))
+                    .catch(error => {
+                        console.log(error)
+                        response.status(500).end()
+                    })
+            }
+        })
+        .catch(error => {
+            console.log(error)
+            response.status(500).end()
+        })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-
     Person
         .findById(request.params.id)
         .then(person => {
@@ -81,13 +102,45 @@ app.get('/api/persons/:id', (request, response) => {
                 response.status(404).end()
             }
         })
+        .catch(error => {
+            console.log(error)
+            response.status(404).end({error: 'malformatted id'})
+        })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
     Person
         .findByIdAndRemove(request.params.id)
         .then(response.status(204).end())
+        .catch(error => {
+            response.status(400).send({error: 'Person does not exist'})
+        })
 })
+
+app.put('/api/persons/:id'), (request, response) => {
+
+    if(request.body.name === undefined) {
+        return response.status(400).json({error: 'Missing name'})
+    }
+    if(request.body.number === undefined) {
+        return response.status(400).json({error: 'Missing number'})
+    }
+
+    const person = {
+        name : request.body.name,
+        number: request.body.name
+    }
+
+    Person
+        .findByIdAndUpdate(request.params.id, person, {new:true})
+        .then(updatedPerson => {
+            response.json(Person.format(updatedPerson))
+        })
+        .catch(error => {
+            console.log(error)
+            resposnse.status(400).send({error: 'malformatted id'})
+        })
+}
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
